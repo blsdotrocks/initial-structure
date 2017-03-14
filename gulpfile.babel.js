@@ -3,6 +3,7 @@
 import gulp from 'gulp';
 import sass from 'gulp-ruby-sass';
 import uglify from 'gulp-uglify';
+import uglifyCss from 'gulp-uglifycss';
 import imagemin from 'gulp-imagemin';
 import concat from 'gulp-concat';
 import plumber from 'gulp-plumber';
@@ -18,6 +19,9 @@ gulp.task('server', ['sass'], () => {
 gulp.task('sass', () =>
 	sass('src/sass/*.sass')
 		.on('error', sass.logError)
+		.pipe(plumber())
+		.pipe(concat('main.css'))
+		.pipe(uglifyCss())
 		.pipe(gulp.dest('assets/stylesheet/'))
 );
 
@@ -42,6 +46,6 @@ gulp.task('watch', () => {
 	gulp.watch('./assets/javascript/*.js').on('change', browserSync.reload);
 	gulp.watch('./src/images/*.{jpg,png,gif}', ['imagemin'])
 	gulp.watch('./*.html').on('change', browserSync.reload);
-})
+});
 
 gulp.task('default', ['js', 'sass', 'imagemin', 'server', 'watch']);
